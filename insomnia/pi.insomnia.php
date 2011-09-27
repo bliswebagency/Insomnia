@@ -44,6 +44,47 @@ class Insomnia {
 	public function __construct()
 	{
 		$this->EE =& get_instance();
+		$this->CI =& get_instance();		
+	}
+	
+	public function run()
+	{
+		error_reporting(0);
+		
+		$source = $this->EE->TMPL->fetch_param('source');
+		$target = $this->EE->TMPL->fetch_param('target');		
+		$source_fields = $this->EE->TMPL->fetch_param('source_fields');
+		$target_fields = $this->EE->TMPL->fetch_param('target_fields');	
+		$join = $this->EE->TMPL->fetch_param('join');
+		$preview = $this->EE->TMPL->fetch_param('preview');
+		
+		$source_field_array=explode(",", $source_fields);
+		$target_field_array=explode(",", $target_fields);
+		
+		//DO THE JOIN (author)
+		if ($join == "author"){
+			
+			//CREATE AN ARRAY OF AUTHORS
+			
+			//FOR EACH AUTHOR: 
+			
+				//FIND THE ENTRY IN THE SOURCE SOURCE
+				
+				//FIND THE ENTRY IN THE TARGET CHANNEL
+				
+				//LOOP THROUGH EACH SOURCE FIELD
+				
+					//COPY DATA FROM THIS SOURCE FIELD TO THE CORRESPONDING TARGET FIELD
+			
+		}
+				
+		
+		//LOOP THROUGH SOURCE FIELDS
+		for ($i=0;$source_field_array[$i] != NULL;$i++){
+			$out .= $target_field_array[$i];
+		}		
+		
+		return $out;							
 	}
 	
 	// ----------------------------------------------------------------
