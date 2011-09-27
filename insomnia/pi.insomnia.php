@@ -92,17 +92,19 @@ class Insomnia {
 					$results_source = $this->EE->db->query($query);				
 				    $source_val = $results_source->row($field_val);
 
-					if ($source_val == NULL) continue;
+					if ($source_val == NULL) continue;					
 					
-					$out .= $source_val . "|";
-					
-					if ($preview == "off"){
-						$target_field_val = "field_id_".$target_field_array[$i];
+					$target_field_val = "field_id_".$target_field_array[$i];
+
+					if ($preview == "no"){
+						$out .= "EXECUTED: ";
 						$data = array($target_field_val => $source_val);
 						$sql = $this->EE->db->update_string('exp_channel_data', $data, "entry_id = '".$target_entries[$author_id]."'");
 						$this->EE->db->query($sql);
+
 					}
-					$out .= "Wrote Entry ".$source_entries[$author_id]."($field_val): $source_val to Entry " . $target_entries[$author_id] . "($target_field_val)";
+
+					$out .= "Wrote Entry ".$source_entries[$author_id]."($field_val): $source_val to Entry " . $target_entries[$author_id] . "($target_field_val)<br />";
 					
 					
 
