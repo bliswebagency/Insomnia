@@ -65,24 +65,65 @@ class Insomnia {
 		if ($join == "author"){
 			
 			//CREATE AN ARRAY OF AUTHORS
+			$results = $this->EE->db->query("SELECT member_id FROM exp_members");			
 			
-			//FOR EACH AUTHOR: 
-			
+			//FOR EACH AUTHOR:
+			foreach($results->result_array() as $row){
+
 				//FIND THE ENTRY IN THE SOURCE SOURCE
+				$author_id = $row['member_id'];
 				
-				//FIND THE ENTRY IN THE TARGET CHANNEL
-				
+				$query = "SELECT entry_id FROM exp_channel_titles WHERE channel_id = \"$source\" AND author_id = \"$author_id\" LIMIT 0,1";
+				$title_results_source = $this->EE->db->query($query);				
+				$source_entries[$author_id] = $title_results_source->row('entry_id');
+
+
+				//FIND THE ENTRY IN THE TARGET CHANNEL				
+				$query = "SELECT entry_id FROM exp_channel_titles WHERE channel_id = \"$target\" AND author_id = \"$author_id\" LIMIT 0,1";
+				$title_results_target = $this->EE->db->query($query);				
+				$target_entries[$author_id] = $title_results_target->row('entry_id');				
+			
 				//LOOP THROUGH EACH SOURCE FIELD
+				for ($i=0;$source_field_array[$i] != NULL;$i++){
+					
+					//GET SOURCE VALUE
+					$field_val = "field_id_".$source_field_array[$i];
+					$query = "SELECT $field_val FROM exp_channel_data WHERE entry_id = \"".$source_entries[$author_id]."\" LIMIT 0,1";
+					$results_source = $this->EE->db->query($query);				
+				    $source_val = $results_source->row($field_val);
+
+					if ($source_val == NULL) continue;
+					
+					$out .= $source_val . "|";
+					
+					if ($preview == "off"){
+						$target_field_val = "field_id_".$target_field_array[$i];
+						$data = array($target_field_val => $source_val);
+						$sql = $this->EE->db->update_string('exp_channel_data', $data, "entry_id = '".$target_entries[$author_id]."'");
+						$this->EE->db->query($sql);
+					}
+					$out .= "Wrote Entry ".$source_entries[$author_id]."($field_val): $source_val to Entry " . $target_entries[$author_id] . "($target_field_val)";
+					
+					
+
+				}
+				$out .= "<br />";
+
+			}
+			
+			
 				
-					//COPY DATA FROM THIS SOURCE FIELD TO THE CORRESPONDING TARGET FIELD
+				
 			
 		}
 				
 		
 		//LOOP THROUGH SOURCE FIELDS
+		/*
 		for ($i=0;$source_field_array[$i] != NULL;$i++){
 			$out .= $target_field_array[$i];
-		}		
+		}
+		*/		
 		
 		return $out;							
 	}
